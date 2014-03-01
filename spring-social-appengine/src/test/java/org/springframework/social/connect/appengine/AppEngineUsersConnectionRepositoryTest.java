@@ -59,9 +59,9 @@ public class AppEngineUsersConnectionRepositoryTest {
 		// NOTE: return count++ % 2 == 0 will cause findUserIdsConnectedTo() fail.
 		//
 		// (in Traditional Chinese:)
-        // ª`·N: ­Y¤£¬O¦^¶Ç true, ¨Ì·Ó§@ªÌ­ì¥ıªº°µªk, ·|¾É­P findUserIdsConnectedTo() ¨ç¼Æ
-        //      ¨ú±oªº localUserIds.size() == 1, ¾É­P´ú¸Õ¥¢±Ñ. (¦ı¨Ï¥Î debugger trace ®É¤S§¹¥ş¥¿±`.)
-        //      ­ì¦]©|¤£²M·¡.
+        // æ³¨æ„: è‹¥ä¸æ˜¯å›å‚³ true, ä¾ç…§ä½œè€…åŸå…ˆçš„åšæ³•, æœƒå°è‡´ findUserIdsConnectedTo() å‡½æ•¸
+        //      å–å¾—çš„ localUserIds.size() == 1, å°è‡´æ¸¬è©¦å¤±æ•—. (ä½†ä½¿ç”¨ debugger trace æ™‚åˆå®Œå…¨æ­£å¸¸.)
+        //      åŸå› å°šä¸æ¸…æ¥š.
 		@Override
 		public boolean shouldApplyNewJob(Key entityGroup) {
 			// every other new job fails to apply
@@ -362,7 +362,7 @@ public class AppEngineUsersConnectionRepositoryTest {
 
 	@Test
 	public void addConnection() {
-		Connection<TestFacebookApi> connection = connectionFactory.createConnection(new AccessGrant("123456789", null, "987654321", 3600));
+		Connection<TestFacebookApi> connection = connectionFactory.createConnection(new AccessGrant("123456789", null, "987654321", 3600L));
 		connectionRepository.addConnection(connection);
 		Connection<TestFacebookApi> restoredConnection = connectionRepository.getPrimaryConnection(TestFacebookApi.class);
 		assertEquals(connection, restoredConnection);	
@@ -371,7 +371,7 @@ public class AppEngineUsersConnectionRepositoryTest {
 	
 	@Test(expected=DuplicateConnectionException.class)
 	public void addConnectionDuplicate() {
-		Connection<TestFacebookApi> connection = connectionFactory.createConnection(new AccessGrant("123456789", null, "987654321", 3600));
+		Connection<TestFacebookApi> connection = connectionFactory.createConnection(new AccessGrant("123456789", null, "987654321", 3600L));
 		connectionRepository.addConnection(connection);
 		connectionRepository.addConnection(connection);
 	}
@@ -411,23 +411,23 @@ public class AppEngineUsersConnectionRepositoryTest {
 	
 	private void insertFacebookConnection() {
 		insertConnection("1", "facebook", "9", 1L, null, null, null, "234567890", null, "345678901",
-				System.currentTimeMillis() + 3600000);
+                System.currentTimeMillis() + 3600000L);
 		
 	}
 	
 	private void insertFacebookConnection2() {
 		insertConnection("1", "facebook", "10", 2L, null, null, null, "456789012", null, "56789012",
-				System.currentTimeMillis() + 3600000);
+                System.currentTimeMillis() + 3600000L);
 	}
 
 	private void insertFacebookConnection3() {
 		insertConnection("2", "facebook", "11", 2L, null, null, null, "456789012", null, "56789012",
-				System.currentTimeMillis() + 3600000);
+				System.currentTimeMillis() + 3600000L);
 	}
 
 	private void insertFacebookConnectionSameFacebookUser() {
 		insertConnection("2", "facebook", "9", 1L, null, null, null, "234567890", null, "345678901",
-				System.currentTimeMillis() + 3600000);
+				System.currentTimeMillis() + 3600000L);
 	}
 	
 	private void insertConnection(String userId, String providerId, String providerUserId, Long rank, String displayName,
@@ -513,22 +513,54 @@ public class AppEngineUsersConnectionRepositoryTest {
 
 		public OAuth2Operations getOAuthOperations() {
 			return new OAuth2Operations() {
-				public String buildAuthorizeUrl(GrantType grantType, OAuth2Parameters params) {
+                @Override
+                public AccessGrant authenticateClient() {
+                    return null;
+                }
+
+                @Override
+                public AccessGrant authenticateClient(String scope) {
 					return null;
 				}
 
-				public String buildAuthenticateUrl(GrantType grantType, OAuth2Parameters params) {
+                @Override
+                public String buildAuthorizeUrl(GrantType grantType, OAuth2Parameters oAuth2Parameters) {
+                    return null;
+                }
+
+                @Override
+                public String buildAuthenticateUrl(GrantType grantType, OAuth2Parameters oAuth2Parameters) {
+                    return null;
+                }
+
+                @Override
+                public String buildAuthorizeUrl(OAuth2Parameters oAuth2Parameters) {
+                    return null;
+                }
+
+                @Override
+                public String buildAuthenticateUrl(OAuth2Parameters oAuth2Parameters) {
+                    return null;
+                }
+
+                @Override
+                public AccessGrant exchangeCredentialsForAccess(java.lang.String username, java.lang.String password, org.springframework.util.MultiValueMap<java.lang.String,java.lang.String> additionalParameters) {
 					return null;
 				}
 
-				public AccessGrant exchangeForAccess(String authorizationGrant, String redirectUri,
-						MultiValueMap<String, String> additionalParameters) {
+                @Override
+                public AccessGrant exchangeForAccess(String authorizationGrant, String redirectUri, MultiValueMap<String, String> additionalParameters) {
 					return null;
 				}
 
-				public AccessGrant refreshAccess(String refreshToken, String scope,
-						MultiValueMap<String, String> additionalParameters) {
-					return new AccessGrant("765432109", "read", "654321098", 3600);
+                @Override
+				public AccessGrant refreshAccess(String refreshToken, String scope, MultiValueMap<String, String> additionalParameters) {
+                    return new AccessGrant("765432109", "read", "654321098", 3600L);
+				}
+
+                @Override
+                public AccessGrant refreshAccess(String refreshToken, MultiValueMap<String,String> additionalParameters) {
+                    return refreshAccess( refreshToken, null, additionalParameters );
 				}
 			};
 		}

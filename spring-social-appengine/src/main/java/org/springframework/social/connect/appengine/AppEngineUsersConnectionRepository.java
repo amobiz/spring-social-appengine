@@ -44,13 +44,13 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
  * @author Vladislav Tserman
  */
 public class AppEngineUsersConnectionRepository implements UsersConnectionRepository {	
-	private final DatastoreService datastore;
+	private transient final DatastoreService datastore;
 	
-	private final ConnectionFactoryLocator connectionFactoryLocator;
-	private final TextEncryptor textEncryptor;
-	private ConnectionSignUp connectionSignUp;	
+	private transient final ConnectionFactoryLocator connectionFactoryLocator;
+	private transient final TextEncryptor textEncryptor;
+	private transient ConnectionSignUp connectionSignUp;	
+	private transient final List<ConnectionInterceptor<?>> interceptors = new ArrayList<ConnectionInterceptor<?>>();
 	private String kindPrefix = "";
-	private final List<ConnectionInterceptor<?>> interceptors = new ArrayList<ConnectionInterceptor<?>>();
 	
 	public AppEngineUsersConnectionRepository(ConnectionFactoryLocator connectionFactoryLocator, TextEncryptor textEncryptor, DatastoreService datastore) {
 		this.connectionFactoryLocator = connectionFactoryLocator;
@@ -123,7 +123,7 @@ public class AppEngineUsersConnectionRepository implements UsersConnectionReposi
 		return repo;
 	}
 
-	private final EntityMapper<String> userIdMapper = new EntityMapper<String>() {
+	private final static EntityMapper<String> userIdMapper = new EntityMapper<String>() {
 		public String mapEntity(Entity entity) {
             Key key = entity.getKey().getParent();
             return key.getName();
