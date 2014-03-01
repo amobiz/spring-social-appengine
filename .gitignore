@@ -1,7 +1,9 @@
-build
-**/build
-.gradle
+**/*.iml
 **/.classpath
+**/.gradle
+**/.idea
 **/.project
 **/.settings
 **/bin
+**/build
+**/target
