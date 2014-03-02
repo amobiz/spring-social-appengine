@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.appengine.api.NamespaceManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -99,12 +100,19 @@ public class AppEngineUsersConnectionRepositoryTest {
 		if (!getKindPrefix().equals("")) {
 			usersConnectionRepository.setKindPrefix(getKindPrefix());
 		}
+        if (!getNamespace().equals("")) {
+            usersConnectionRepository.setNamespace(getNamespace());
+        }
 		connectionRepository = usersConnectionRepository.createConnectionRepository("1");
 	}
 	
 	protected String getKindPrefix() {
 		return "";
 	}
+
+    protected String getNamespace() {
+        return "";
+    }
 
 	@After
 	public void tearDown() {
@@ -323,6 +331,9 @@ public class AppEngineUsersConnectionRepositoryTest {
 
 	@Test
 	public void removeConnections() {
+        final String oldns = NamespaceManager.get();
+        NamespaceManager.set(getNamespace());
+        try {
 		insertFacebookConnection();
 		insertFacebookConnection2();
 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();		
@@ -335,6 +346,10 @@ public class AppEngineUsersConnectionRepositoryTest {
 		countEntities = ds.prepare(query).countEntities(withLimit(1));
 		assertTrue(countEntities == 0);
 	}
+        finally {
+            NamespaceManager.set( oldns );
+        }
+	}
 	
 	@Test
 	public void removeConnectionsToProviderNoOp() {
@@ -343,6 +358,9 @@ public class AppEngineUsersConnectionRepositoryTest {
 
 	@Test
 	public void removeConnection() {
+        final String oldns = NamespaceManager.get();
+        NamespaceManager.set( getNamespace() );
+        try {
 		insertFacebookConnection();
 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();		
 		Query query = new Query(getKindPrefix() + "UserConnection")
@@ -353,6 +371,10 @@ public class AppEngineUsersConnectionRepositoryTest {
 		connectionRepository.removeConnection(new ConnectionKey("facebook", "9"));
 		countEntities = ds.prepare(query).countEntities(withLimit(1));
 		assertTrue(countEntities == 0);		
+	}
+        finally {
+            NamespaceManager.set( oldns );
+        }
 	}
 
 	@Test
@@ -433,6 +455,9 @@ public class AppEngineUsersConnectionRepositoryTest {
 	private void insertConnection(String userId, String providerId, String providerUserId, Long rank, String displayName,
 			String profileUrl, String imageUrl, String accessToken, String secret, String refreshToken, Long expireTime)  
 	{
+        final String oldns = NamespaceManager.get();
+        NamespaceManager.set( getNamespace() );
+        try {
 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 		String connectionKeyName = userId + "-" + providerId + "-" + providerUserId;
 		// Create a new Entity with the specified kind and key name and user as parent Entity.
@@ -454,7 +479,13 @@ public class AppEngineUsersConnectionRepositoryTest {
 			ds.put(txn, userConnection);
 			txn.commit();			
 		} finally {
-			if (txn.isActive()) txn.rollback();
+                if (txn.isActive()) {
+                    txn.rollback();
+                }
+            }
+        }
+        finally {
+            NamespaceManager.set( oldns );
 		}
 	}
 	
