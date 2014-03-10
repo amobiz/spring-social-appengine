@@ -20,7 +20,7 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-        
+
         <!-- Google App Engine -->
         <!--
             Using Apache Maven
@@ -118,11 +118,6 @@
 	</dependencies>
 
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-		</resources>
 		<plugins>
             <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -131,7 +126,7 @@
 			<plugin>
 		        <groupId>org.apache.maven.plugins</groupId>
 		        <artifactId>maven-resources-plugin</artifactId>
-	      	</plugin>			
+	      	</plugin>
             <!-- Google App Engine plugin -->
             <plugin>
                 <groupId>com.google.appengine</groupId>

@@ -19,7 +19,7 @@
 	    <org.springframework.social.linkedin-version>1.0.0.BUILD-SNAPSHOT</org.springframework.social.linkedin-version>
 	    <org.slf4j-version>1.7.5</org.slf4j-version>
 	</properties>
-	
+
 	<modules>
 		<module>spring-social-appengine</module>
 	</modules>
@@ -32,7 +32,7 @@
 	            <version>4.10</version>
 	            <scope>test</scope>
 	        </dependency>
-	        
+
 	        <!-- Google App Engine -->
 	        <!--
 	            Using Apache Maven
@@ -71,7 +71,7 @@
 	        </dependency>
 
 	        <!-- Spring -->
-			
+
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context</artifactId>
@@ -89,17 +89,17 @@
 				<artifactId>spring-tx</artifactId>
 				<version>${org.springframework-version}</version>
 			</dependency>
-	        
+
 	        <!-- Spring Security -->
-			
+
 			<dependency>
 				<groupId>org.springframework.security</groupId>
 				<artifactId>spring-security-core</artifactId>
 				<version>${org.springframework.security-version}</version>
 			</dependency>
-	        
+
 	        <!-- Spring Social -->
-			
+
 			<dependency>
 			    <groupId>org.springframework.social</groupId>
 			    <artifactId>spring-social-core</artifactId>
@@ -149,7 +149,7 @@
 		    </dependency>
 
 			<!-- Logging -->
-			
+
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
@@ -222,7 +222,7 @@
 			        <configuration>
 			          	<encoding>UTF-8</encoding>
 			        </configuration>
-		      	</plugin>			
+		      	</plugin>
 	            <!-- Google App Engine plugin -->
 	            <plugin>
 	                <groupId>com.google.appengine</groupId>
